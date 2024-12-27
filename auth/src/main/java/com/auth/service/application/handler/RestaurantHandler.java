@@ -6,16 +6,16 @@ import com.auth.service.application.mapper.RestaurantMapper;
 import com.auth.service.domain.model.Restaurant;
 import com.auth.service.domain.usecase.CreateRestaurantUseCase;
 
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class RestaurantHandler {
     private final CreateRestaurantUseCase createRestaurantUseCase;
-
-    public RestaurantHandler(CreateRestaurantUseCase createRestaurantUseCase) {
-        this.createRestaurantUseCase = createRestaurantUseCase;
-    }
-
+  
+  
     public void createRestaurant(RestaurantDto restaurantDto) {
-        Restaurant restaurant = RestaurantMapper.INSTANCE.toRestaurant(restaurantDto);
+        Restaurant restaurant = RestaurantMapper.INSTANCE.toRestaurant(restaurantDto); 
         createRestaurantUseCase.execute(restaurant);
     }
 }

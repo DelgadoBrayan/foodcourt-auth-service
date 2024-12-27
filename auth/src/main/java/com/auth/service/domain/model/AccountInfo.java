@@ -3,13 +3,12 @@ package com.auth.service.domain.model;
 public class AccountInfo {
 
     private String password;
-    private String role = "propietario";
+    private String role;
 
     public AccountInfo() {}
 
     public AccountInfo(String password) {
         this.password = password;
-        this.role = "propietario";
     }
 
     // Getters y Setters

@@ -45,20 +45,28 @@ public class Owner {
         this.accountInfo = accountInfo;
     }
 
-    public boolean isAdult() { return personalInfo.isAdult(); } 
-    @Override public boolean equals(Object o) {
-         if (this == o) return true; 
-         if (o == null || getClass() != o.getClass()) return false; 
-         Owner owner = (Owner) o; 
-         return id != null ? id.equals(owner.id) : owner.id == null; } 
-         @Override 
-         public int hashCode() { 
-            return id != null ? id.hashCode() : 0; 
-        }
+    public boolean isAdult() {
+        return personalInfo.isAdult();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Owner owner = (Owner) o;
+        return id != null ? id.equals(owner.id) : owner.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 
         @Override
         public String toString() {
-            return "Owner [id=" + id + 
+            return "Owner id=" + id + 
                    ", personalInfo=" + personalInfo + 
                    ", contactInfo=" + contactInfo +
                     ", accountInfo=" + accountInfo;
