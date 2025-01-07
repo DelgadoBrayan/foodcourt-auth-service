@@ -1,32 +1,28 @@
 package com.auth.service.infrastructure.input.rest;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.auth.service.application.dto.RestaurantDto;
-import com.auth.service.application.handler.RestaurantHandler;
-
-import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-
-
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.auth.service.application.dto.RestaurantRequestDto;
+import com.auth.service.application.handler.CreateRestaurantHandler;
+
+import lombok.RequiredArgsConstructor;
 
 
 @RestController
-@RequestMapping("/admin/restaurants")
-@AllArgsConstructor
+@RequestMapping("/api/restaurants")
+@RequiredArgsConstructor
 public class RestaurantController {
-    private final RestaurantHandler restaurantHandler;
+    private final CreateRestaurantHandler restaurantHandler;
+
+   
 
     @PostMapping
-    public ResponseEntity<Void> createRestaurant(@Valid @RequestBody RestaurantDto restaurantDto) {
-        restaurantHandler.createRestaurant(restaurantDto);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    public ResponseEntity<String> createRestaurant(@RequestBody RestaurantRequestDto restaurantDto) {
+        restaurantHandler.saveRestaurant(restaurantDto);
+        return ResponseEntity.ok("Restaurant created successfully");
     }
-    
-    
 }

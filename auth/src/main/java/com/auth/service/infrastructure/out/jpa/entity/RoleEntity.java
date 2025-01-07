@@ -4,28 +4,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "roles")
 @Getter
 @Setter
-public class RestaurantEntity {
+public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
-    private String nit;
-    private String address;
-    private String phone;
-    private String logoUrl;
-
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private UserEntity owner;
 }
