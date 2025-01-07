@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,58 +16,59 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import com.auth.service.domain.model.AccountInfo;
-import com.auth.service.domain.model.ContactInfo;
-import com.auth.service.domain.model.Owner;
-import com.auth.service.domain.model.PersonalInfo;
-import com.auth.service.domain.spi.IOwnerPersistencePort;
+import com.auth.service.domain.model.user.AccountInfo;
+import com.auth.service.domain.model.user.ContactInfo;
+import com.auth.service.domain.model.user.PersonalInfo;
+import com.auth.service.domain.model.user.User;
+import com.auth.service.domain.spi.IUserPersistencePort;
 
  class RegisterOwnerUseCaseTest {
     @Mock
-    private IOwnerPersistencePort ownerPersistencePort;
+    private IUserPersistencePort ownerPersistencePort;
 
     @InjectMocks
-    private RegisterOwnerUseCase registerOwnerUseCase;
+    private CreateOwnerUseCase registerOwnerUseCase;
 
-    private Owner owner;
+    private User owner;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         PersonalInfo personalInfo = new PersonalInfo("John", "Doe", LocalDate.of(1990, 1, 1));
-        ContactInfo contactInfo = new ContactInfo("1061016730", "+513170501796","bd@gmail.com");
-        AccountInfo accountInfo = new AccountInfo("password");
-        owner = new Owner(1L,personalInfo, contactInfo, accountInfo);
+        ContactInfo contactInfo = new ContactInfo(1061016730L, 573170501796L, "bd@gmail.com");
+        AccountInfo accountInfo = new AccountInfo("password", 1L);
+        owner = new User(1L,personalInfo, contactInfo, accountInfo);
     }
 
     
     @Test 
     void testExecute_OwnerAlreadyExists() { 
-        when(ownerPersistencePort.findByEmail(owner.getContactInfo().getEmail())).thenReturn(Optional.of(owner)); 
+        when(ownerPersistencePort.findUserByEmail(owner.getContactInfo().getEmail())).thenReturn(owner); 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> { 
-            registerOwnerUseCase.execute(owner); }); 
+            registerOwnerUseCase.saveUser(owner);
+        }); 
         
         assertEquals("Owner already exists", exception.getMessage()); 
-        verify(ownerPersistencePort, times(1)).findByEmail(owner.getContactInfo().getEmail()); 
-        verify(ownerPersistencePort, never()).saveOwner(any(Owner.class));
+        verify(ownerPersistencePort, times(1)).findUserByEmail(owner.getContactInfo().getEmail()); 
+        verify(ownerPersistencePort, never()).saveUser(any(User.class));
     }
 
     @Test 
     void testExecute_OwnerNotAdult() { 
         owner.getPersonalInfo().setBirthDate(LocalDate.of(2010, 1, 1)); 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> { 
-            registerOwnerUseCase.execute(owner); 
+            registerOwnerUseCase.saveUser(owner); 
         }); 
         assertEquals("Owner must be an adult", exception.getMessage()); 
-        verify(ownerPersistencePort, never()).saveOwner(any(Owner.class)); 
+        verify(ownerPersistencePort, never()).saveUser(any(User.class)); 
     }
 
     @Test  
     void testExecute_Success() { 
-        when(ownerPersistencePort.findByEmail(owner.getContactInfo().getEmail())).thenReturn(Optional.empty()); 
-        registerOwnerUseCase.execute(owner); 
-        verify(ownerPersistencePort, times(1)).findByEmail(owner.getContactInfo().getEmail()); 
-        verify(ownerPersistencePort, times(1)).saveOwner(owner); 
+        when(ownerPersistencePort.findUserByEmail(owner.getContactInfo().getEmail())).thenReturn(owner); 
+        registerOwnerUseCase.saveUser(owner); 
+        verify(ownerPersistencePort, times(1)).findUserByEmail(owner.getContactInfo().getEmail()); 
+        verify(ownerPersistencePort, times(1)).saveUser(owner); 
     }
 
 }
