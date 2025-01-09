@@ -1,5 +1,7 @@
 package com.auth.service.domain.usecase;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.auth.service.domain.api.IRestaurantServicePort;
@@ -30,6 +32,16 @@ public class CreateRestaurantUseCase implements IRestaurantServicePort{
 
         return restaurantPersistencePort.saveRestaurant(restaurant);
     }
+
+    @Override
+    public List<Restaurant> getAllRestaurants(int page, int size) {
+        if (page < 0 || size <= 0) {
+            throw new InvalidRestaurantException("La página debe ser mayor o igual a 0 y el tamaño mayor a 0.");
+        }
+
+        return restaurantPersistencePort.getAllRestaurants(page, size);
+    }
+
 
     private void validateRestaurant(Restaurant restaurant) {
         if (restaurant.getName() == null || restaurant.getName().isEmpty()) {
@@ -71,6 +83,5 @@ public class CreateRestaurantUseCase implements IRestaurantServicePort{
             throw new InvalidRestaurantException("No puesdes realizar esta accion por tu rol");
         }
     }
-    
 
 }
