@@ -1,5 +1,14 @@
 package com.auth.service.infrastructure.out.jpa.adapter;
 
+import java.util.List;
+
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+
+
 import com.auth.service.domain.model.restaurant.Restaurant;
 import com.auth.service.domain.spi.IRestaurantPersistencePort;
 import com.auth.service.infrastructure.out.jpa.entity.RestaurantEntity;
@@ -23,5 +32,14 @@ public class RestaurantRepositoryAdapter implements IRestaurantPersistencePort {
     public Restaurant saveRestaurant(Restaurant restaurant) {
         RestaurantEntity restaurantEntity = mapper.toEntity(restaurant);
         return mapper.toDomain(repository.save(restaurantEntity));
+    }
+
+    @Override
+    public List<Restaurant> getAllRestaurants(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
+        Page<RestaurantEntity> restaurantEntities = repository.findAll(pageable);
+        return restaurantEntities.getContent().stream()
+                .map(mapper::toDomain)
+                .toList();
     }
 }

@@ -1,9 +1,12 @@
 package com.auth.service.application.handler;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.auth.service.application.dto.RestaurantRequestDto;
 import com.auth.service.application.dto.RestaurantResponseDto;
+import com.auth.service.application.dto.RestaurantResponseList;
 import com.auth.service.application.mapper.RestaurantMapper;
 import com.auth.service.domain.model.restaurant.Restaurant;
 import com.auth.service.domain.usecase.CreateRestaurantUseCase;
@@ -27,5 +30,11 @@ public class CreateRestaurantHandler {
     public RestaurantResponseDto findRestaurantById(Long restaurantId) {
         Restaurant restaurant = createRestaurantUseCase.findRestaurantById(restaurantId);
         return RestaurantMapper.INSTANCE.toDto(restaurant);
+    }
+
+    public List<RestaurantResponseList> getRestaurantsOrderedAndPaginated(int page, int size) {
+        List<Restaurant> restaurants = createRestaurantUseCase.getAllRestaurants(page, size);
+
+        return RestaurantMapper.INSTANCE.toResponseList(restaurants);
     }
 }
